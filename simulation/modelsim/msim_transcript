@@ -1,0 +1,249 @@
+# ERROR: No extended dataflow license exists
+# do mp1_run_msim_rtl_verilog.do 
+# if {[file exists rtl_work]} {
+# 	vdel -lib rtl_work -all
+# }
+# vlib rtl_work
+# vmap work rtl_work
+# Copying /software/altera/13.1/modelsim_ase/linuxaloem/../modelsim.ini to modelsim.ini
+# Modifying modelsim.ini
+# ** Warning: Copied /software/altera/13.1/modelsim_ase/linuxaloem/../modelsim.ini to modelsim.ini.
+#          Updated modelsim.ini.
+# 
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/lc3b_types.sv}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling package lc3b_types
+# 
+# Top level modules:
+# 	--none--
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/plus2.sv}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling module plus2
+# 
+# Top level modules:
+# 	plus2
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/register.sv}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling module register
+# 
+# Top level modules:
+# 	register
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/mux2.sv}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling module mux2
+# 
+# Top level modules:
+# 	mux2
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/mux3.sv}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling module mux3
+# 
+# Top level modules:
+# 	mux3
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/adj.sv}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling package adj_sv_unit
+# -- Importing package lc3b_types
+# -- Compiling module adj
+# 
+# Top level modules:
+# 	adj
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/alu.sv}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling package alu_sv_unit
+# -- Importing package lc3b_types
+# -- Compiling module alu
+# 
+# Top level modules:
+# 	alu
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/control.sv}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling package control_sv_unit
+# -- Importing package lc3b_types
+# -- Compiling module control
+# 
+# Top level modules:
+# 	control
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/gencc.sv}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling package gencc_sv_unit
+# -- Importing package lc3b_types
+# -- Compiling module gencc
+# 
+# Top level modules:
+# 	gencc
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/ir.sv}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling package ir_sv_unit
+# -- Importing package lc3b_types
+# -- Compiling module ir
+# 
+# Top level modules:
+# 	ir
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/regfile.sv}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling package regfile_sv_unit
+# -- Importing package lc3b_types
+# -- Compiling module regfile
+# 
+# Top level modules:
+# 	regfile
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/cccomp.sv}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling package cccomp_sv_unit
+# -- Importing package lc3b_types
+# -- Compiling module cccomp
+# 
+# Top level modules:
+# 	cccomp
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/br_add.sv}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling package br_add_sv_unit
+# -- Importing package lc3b_types
+# -- Compiling module br_add
+# 
+# Top level modules:
+# 	br_add
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/sext.sv}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling package sext_sv_unit
+# -- Importing package lc3b_types
+# -- Compiling module sext
+# 
+# Top level modules:
+# 	sext
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/datapath.sv}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling package datapath_sv_unit
+# -- Importing package lc3b_types
+# -- Compiling module datapath
+# 
+# Top level modules:
+# 	datapath
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/mp1.sv}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling package mp1_sv_unit
+# -- Importing package lc3b_types
+# -- Compiling module mp1
+# 
+# Top level modules:
+# 	mp1
+# 
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/mp1_tb.sv}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling module mp1_tb
+# 
+# Top level modules:
+# 	mp1_tb
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/magic_memory.sv}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling module magic_memory
+# 
+# Top level modules:
+# 	magic_memory
+# 
+# vsim -t 1ps -L altera_ver -L lpm_ver -L sgate_ver -L altera_mf_ver -L altera_lnsim_ver -L stratixiii_ver -L rtl_work -L work -voptargs="+acc"  mp1_tb
+# vsim -L altera_ver -L lpm_ver -L sgate_ver -L altera_mf_ver -L altera_lnsim_ver -L stratixiii_ver -L rtl_work -L work -voptargs=\"+acc\" -t 1ps mp1_tb 
+# Loading sv_std.std
+# Loading work.mp1_tb
+# Loading work.lc3b_types
+# Loading work.mp1_sv_unit
+# Loading work.mp1
+# Loading work.datapath_sv_unit
+# Loading work.datapath
+# Loading work.mux3
+# Loading work.ir_sv_unit
+# Loading work.ir
+# Loading work.regfile_sv_unit
+# Loading work.regfile
+# Loading work.register
+# Loading work.mux2
+# Loading work.sext_sv_unit
+# Loading work.sext
+# Loading work.adj_sv_unit
+# Loading work.adj
+# Loading work.plus2
+# Loading work.gencc_sv_unit
+# Loading work.gencc
+# Loading work.cccomp_sv_unit
+# Loading work.cccomp
+# Loading work.br_add_sv_unit
+# Loading work.br_add
+# Loading work.alu_sv_unit
+# Loading work.alu
+# Loading work.control_sv_unit
+# Loading work.control
+# Loading work.magic_memory
+# 
+# add wave *
+# view structure
+# .main_pane.structure.interior.cs.body.struct
+# view signals
+# .main_pane.objects.interior.cs.body.tree
+# run 200 ns
+do wave.do
+restart -f
+# Loading sv_std.std
+# Loading work.mp1_tb
+# Loading work.lc3b_types
+# Loading work.mp1_sv_unit
+# Loading work.mp1
+# Loading work.datapath_sv_unit
+# Loading work.datapath
+# Loading work.mux3
+# Loading work.ir_sv_unit
+# Loading work.ir
+# Loading work.regfile_sv_unit
+# Loading work.regfile
+# Loading work.register
+# Loading work.mux2
+# Loading work.sext_sv_unit
+# Loading work.sext
+# Loading work.adj_sv_unit
+# Loading work.adj
+# Loading work.plus2
+# Loading work.gencc_sv_unit
+# Loading work.gencc
+# Loading work.cccomp_sv_unit
+# Loading work.cccomp
+# Loading work.br_add_sv_unit
+# Loading work.br_add
+# Loading work.alu_sv_unit
+# Loading work.alu
+# Loading work.control_sv_unit
+# Loading work.control
+# Loading work.magic_memory
+run 8000ns
+add wave -position 1  sim:/mp1_tb/dut/datapath/pc_out
+restart -f
+# Loading sv_std.std
+# Loading work.mp1_tb
+# Loading work.lc3b_types
+# Loading work.mp1_sv_unit
+# Loading work.mp1
+# Loading work.datapath_sv_unit
+# Loading work.datapath
+# Loading work.mux3
+# Loading work.ir_sv_unit
+# Loading work.ir
+# Loading work.regfile_sv_unit
+# Loading work.regfile
+# Loading work.register
+# Loading work.mux2
+# Loading work.sext_sv_unit
+# Loading work.sext
+# Loading work.adj_sv_unit
+# Loading work.adj
+# Loading work.plus2
+# Loading work.gencc_sv_unit
+# Loading work.gencc
+# Loading work.cccomp_sv_unit
+# Loading work.cccomp
+# Loading work.br_add_sv_unit
+# Loading work.br_add
+# Loading work.alu_sv_unit
+# Loading work.alu
+# Loading work.control_sv_unit
+# Loading work.control
+# Loading work.magic_memory
+run 2000ns

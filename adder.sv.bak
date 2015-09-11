@@ -1,0 +1,12 @@
+module adder #(parameter width = 16)
+(
+	input adj9_out,
+	input pc_plus2_out,
+	output lc3b_word adder_out
+)
+
+always_comb
+begin
+	adder_out = adj9_out + pc_plus2_out
+end
+endmodule : adder

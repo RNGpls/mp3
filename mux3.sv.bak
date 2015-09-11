@@ -1,0 +1,18 @@
+module mux3 #(parameter width = 16)
+(
+	input sel,
+	input [width-1:0] a, b, c,
+	output logic [width-1:0] f
+);
+
+always_comb
+begin		
+	case(sel)
+		0: f = a;
+		1: f = b;
+		2: f = c;
+		default: /* Do Nothing */
+	endcase
+end
+
+endmodule : mux3

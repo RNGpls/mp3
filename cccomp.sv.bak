@@ -1,0 +1,33 @@
+module cccomp #(parameter width = 3)
+(
+	input in,
+	input cc,
+	output logic branch_enable
+)
+
+always_comb
+begin
+	case(in)
+		3b'000: branch_enable = 0;
+		3b'111: branch_enable = 1;
+		3b'001: begin
+			if (in > 0)
+				branch_enable = 1;
+			else
+				branch_enable = 0;
+		end
+		3b'010: begin
+			if (in == 0)
+				branch_enable = 1;
+			else
+				branch_enable = 0;
+		end
+		3b'100: begin
+			if (in < 0)
+				branch_enable = 1;
+			else
+				branch_enable = 0;
+		end
+		default: branch_enable = 0;
+	endcase
+end
