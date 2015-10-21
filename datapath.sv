@@ -16,19 +16,27 @@ module datapath
 	 input load_cc,
 	 
 	 input storemux_sel,
-	 input logic [1:0] alumux_sel,
+	 input logic [2:0] alumux_sel,
 	 input logic [1:0] regfilemux_sel,
-	 input marmux_sel,
-	 input mdrmux_sel,
+	 input logic [1:0] marmux_sel,
+	 input logic [1:0] mdrmux_sel,
+	 input adjmux_sel,
+	 input destmux_sel,
 	 
 	 input lc3b_word mem_rdata,
 	 input lc3b_aluop aluop,
+	 
+	 input logic byte_check,
 	 
 	 output lc3b_word mem_address,
 	 output lc3b_word mem_wdata,
 	 
 	 output lc3b_opcode opcode,
 	 output logic imm5_enable,
+	 output logic jsr_enable,
+	 output logic [1:0] byte_enable,
+	 output logic dshf,
+	 output logic ashf,
 	 output logic branch_enable
 );
 
@@ -39,27 +47,37 @@ lc3b_reg sr1;
 lc3b_reg sr2;
 lc3b_reg dest;
 lc3b_reg storemux_out;
+lc3b_reg destmux_out;
 
 lc3b_word sr1_out;
 lc3b_word sr2_out;
 
+lc3b_imm4 imm4;
 lc3b_imm5 imm5;
+lc3b_trapvect8  trapvect8;
 lc3b_offset6 offset6;
 lc3b_offset9 offset9;
+lc3b_offset11 offset11;
 
+lc3b_word sext4_out;
 lc3b_word sext5_out;
+lc3b_word sext6_out;
+lc3b_word zextsh8_out;
 lc3b_word adj6_out;
 lc3b_word adj9_out;
+lc3b_word adj11_out;
 
 lc3b_word pcmux_out;
 lc3b_word alumux_out;
 lc3b_word regfilemux_out;
 lc3b_word marmux_out;
 lc3b_word mdrmux_out;
+lc3b_word adjmux_out;
 lc3b_word alu_out;
 lc3b_word pc_out;
 lc3b_word br_add_out;
 lc3b_word pc_plus2_out;
+lc3b_word byte_extend_out;
 
 lc3b_nzp gencc_out;
 lc3b_nzp cc_out;
@@ -67,12 +85,13 @@ lc3b_nzp cc_out;
 /*
  * PC
  */
-mux3 pcmux
+mux4 pcmux
 (
     .sel(pcmux_sel),
     .a(pc_plus2_out),
     .b(br_add_out),
 	 .c(sr1_out),
+	 .d(mem_wdata),
     .f(pcmux_out)
 );
 
@@ -86,9 +105,15 @@ ir ir
 	.src1(sr1),
 	.src2(sr2),
 	.imm5_enable(imm5_enable),
+	.jsr_enable(jsr_enable),
+	.dshf(dshf),
+	.ashf(ashf),
+	.imm4(imm4),
 	.imm5(imm5),
+	.trapvect8(trapvect8),
 	.offset6(offset6),
-	.offset9(offset9)
+	.offset9(offset9),
+	.offset11(offset11)
 );
 
 regfile regfile
@@ -98,9 +123,18 @@ regfile regfile
    .in(regfilemux_out),
    .src_a(storemux_out),
 	.src_b(sr2),
-	.dest,
+	.dest(destmux_out),
    .reg_a(sr1_out),
 	.reg_b(sr2_out)
+);
+
+byte_extend byte_extend
+(
+	.address(mem_address),
+	.in(mem_wdata),
+	.byte_check(byte_check),
+	.byte_enable(byte_enable),
+	.out(byte_extend_out)
 );
 
 /* Registers */
@@ -146,44 +180,85 @@ mux2 #(.width(3)) storemux
 	.f(storemux_out)
 );
 
-mux3 alumux
+mux5 alumux
 (
 	.sel(alumux_sel),
 	.a(sr2_out),
 	.b(adj6_out),
 	.c(sext5_out),
+	.d(sext6_out),
+	.e(sext4_out),
 	.f(alumux_out)
 );
 
-mux3 regfilemux
+mux4 regfilemux
 (
 	.sel(regfilemux_sel),
 	.a(alu_out),
-	.b(mem_wdata),
+	.b(byte_extend_out),
 	.c(br_add_out),
+	.d(pc_out),
 	.f(regfilemux_out)
 );
 
-mux2 marmux
+mux4 marmux
 (
 	.sel(marmux_sel),
 	.a(alu_out),
 	.b(pc_out),
+	.c(mem_wdata),
+	.d(zextsh8_out),
 	.f(marmux_out)
 );
 
-mux2 mdrmux
+mux3 mdrmux
 (
 	.sel(mdrmux_sel),
 	.a(alu_out),
 	.b(mem_rdata),
+	.c(byte_extend_out),
 	.f(mdrmux_out)
 );
+
+mux2 adjmux
+(
+	.sel(adjmux_sel),
+	.a(adj9_out),
+	.b(adj11_out),
+	.f(adjmux_out)
+);
+
+mux2 #(.width(3)) destmux
+(
+	.sel(destmux_sel),
+	.a(dest),
+	.b(3'b111),
+	.f(destmux_out)
+);
+
+sext #(.width(4)) sext4
+(
+	.in(imm4),
+	.out(sext4_out)
+);
+
 
 sext sext5
 (
 	.in(imm5),
 	.out(sext5_out)
+);
+
+sext #(.width(6)) sext6
+(
+	.in(offset6),
+	.out(sext6_out)
+);
+
+zextsh zextsh8
+(
+	.in(trapvect8),
+	.out(zextsh8_out)
 );
 
 adj #(.width(6)) adj6
@@ -196,6 +271,12 @@ adj #(.width(9)) adj9
 (
 	.in(offset9),
 	.out(adj9_out)
+);
+
+adj #(.width(11)) adj11
+(
+	.in(offset11),
+	.out(adj11_out)
 );
 
 plus2 pc_plus2
@@ -219,7 +300,7 @@ cccomp cccomp
 
 br_add br_add
 (
-	.a(adj9_out),
+	.a(adjmux_out),
 	.b(pc_out),
 	.out(br_add_out)
 );

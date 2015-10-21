@@ -1,5 +1,5 @@
 Assembler report for mp1
-Sat Sep  5 22:23:07 2015
+Sun Sep 13 15:25:00 2015
 Quartus II 32-bit Version 13.1.4 Build 182 03/12/2014 SJ Full Version
 
 
@@ -37,7 +37,7 @@ applicable agreement for further details.
 +---------------------------------------------------------------+
 ; Assembler Summary                                             ;
 +-----------------------+---------------------------------------+
-; Assembler Status      ; Successful - Sat Sep  5 22:23:07 2015 ;
+; Assembler Status      ; Successful - Sun Sep 13 15:25:00 2015 ;
 ; Revision Name         ; mp1                                   ;
 ; Top-level Entity Name ; mp1                                   ;
 ; Family                ; Stratix III                           ;
@@ -92,8 +92,8 @@ applicable agreement for further details.
 ; Option         ; Setting          ;
 +----------------+------------------+
 ; Device         ; EP3SE50F780C2    ;
-; JTAG usercode  ; 0x018C916E       ;
-; Checksum       ; 0x018C916E       ;
+; JTAG usercode  ; 0x019075CD       ;
+; Checksum       ; 0x019075CD       ;
 +----------------+------------------+
 
 
@@ -103,13 +103,13 @@ applicable agreement for further details.
 Info: *******************************************************************
 Info: Running Quartus II 32-bit Assembler
     Info: Version 13.1.4 Build 182 03/12/2014 SJ Full Version
-    Info: Processing started: Sat Sep  5 22:23:02 2015
+    Info: Processing started: Sun Sep 13 15:24:55 2015
 Info: Command: quartus_asm --read_settings_files=off --write_settings_files=off mp1 -c mp1
 Info (115031): Writing out detailed assembly data for power analysis
 Info (115030): Assembler is generating device programming files
 Info: Quartus II 32-bit Assembler was successful. 0 errors, 0 warnings
-    Info: Peak virtual memory: 433 megabytes
-    Info: Processing ended: Sat Sep  5 22:23:07 2015
+    Info: Peak virtual memory: 422 megabytes
+    Info: Processing ended: Sun Sep 13 15:25:00 2015
     Info: Elapsed time: 00:00:05
     Info: Total CPU time (on all processors): 00:00:04
 

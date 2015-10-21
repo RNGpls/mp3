@@ -40,6 +40,18 @@
 # 
 # Top level modules:
 # 	mux3
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/mux4.sv}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling module mux4
+# 
+# Top level modules:
+# 	mux4
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/mux5.sv}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling module mux5
+# 
+# Top level modules:
+# 	mux5
 # vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/adj.sv}
 # Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
 # -- Compiling package adj_sv_unit
@@ -112,6 +124,22 @@
 # 
 # Top level modules:
 # 	sext
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/byte_extend.sv}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling package byte_extend_sv_unit
+# -- Importing package lc3b_types
+# -- Compiling module byte_extend
+# 
+# Top level modules:
+# 	byte_extend
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/zextsh.sv}
+# Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
+# -- Compiling package zextsh_sv_unit
+# -- Importing package lc3b_types
+# -- Compiling module zextsh
+# 
+# Top level modules:
+# 	zextsh
 # vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/datapath.sv}
 # Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
 # -- Compiling package datapath_sv_unit
@@ -135,12 +163,12 @@
 # 
 # Top level modules:
 # 	mp1_tb
-# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/magic_memory.sv}
+# vlog -sv -work work +incdir+/home/rstang2/ece411/mp1 {/home/rstang2/ece411/mp1/memory.sv}
 # Model Technology ModelSim ALTERA vlog 10.1d Compiler 2012.11 Nov  2 2012
-# -- Compiling module magic_memory
+# -- Compiling module memory
 # 
 # Top level modules:
-# 	magic_memory
+# 	memory
 # 
 # vsim -t 1ps -L altera_ver -L lpm_ver -L sgate_ver -L altera_mf_ver -L altera_lnsim_ver -L stratixiii_ver -L rtl_work -L work -voptargs="+acc"  mp1_tb
 # vsim -L altera_ver -L lpm_ver -L sgate_ver -L altera_mf_ver -L altera_lnsim_ver -L stratixiii_ver -L rtl_work -L work -voptargs=\"+acc\" -t 1ps mp1_tb 
@@ -151,15 +179,21 @@
 # Loading work.mp1
 # Loading work.datapath_sv_unit
 # Loading work.datapath
-# Loading work.mux3
+# Loading work.mux4
 # Loading work.ir_sv_unit
 # Loading work.ir
 # Loading work.regfile_sv_unit
 # Loading work.regfile
+# Loading work.byte_extend_sv_unit
+# Loading work.byte_extend
 # Loading work.register
 # Loading work.mux2
+# Loading work.mux5
+# Loading work.mux3
 # Loading work.sext_sv_unit
 # Loading work.sext
+# Loading work.zextsh_sv_unit
+# Loading work.zextsh
 # Loading work.adj_sv_unit
 # Loading work.adj
 # Loading work.plus2
@@ -173,7 +207,7 @@
 # Loading work.alu
 # Loading work.control_sv_unit
 # Loading work.control
-# Loading work.magic_memory
+# Loading work.memory
 # 
 # add wave *
 # view structure
@@ -182,7 +216,7 @@
 # .main_pane.objects.interior.cs.body.tree
 # run 200 ns
 do wave.do
-restart -f
+restart -f; run 10000ns
 # Loading sv_std.std
 # Loading work.mp1_tb
 # Loading work.lc3b_types
@@ -190,15 +224,21 @@ restart -f
 # Loading work.mp1
 # Loading work.datapath_sv_unit
 # Loading work.datapath
-# Loading work.mux3
+# Loading work.mux4
 # Loading work.ir_sv_unit
 # Loading work.ir
 # Loading work.regfile_sv_unit
 # Loading work.regfile
+# Loading work.byte_extend_sv_unit
+# Loading work.byte_extend
 # Loading work.register
 # Loading work.mux2
+# Loading work.mux5
+# Loading work.mux3
 # Loading work.sext_sv_unit
 # Loading work.sext
+# Loading work.zextsh_sv_unit
+# Loading work.zextsh
 # Loading work.adj_sv_unit
 # Loading work.adj
 # Loading work.plus2
@@ -212,10 +252,8 @@ restart -f
 # Loading work.alu
 # Loading work.control_sv_unit
 # Loading work.control
-# Loading work.magic_memory
-run 8000ns
-add wave -position 1  sim:/mp1_tb/dut/datapath/pc_out
-restart -f
+# Loading work.memory
+restart -f; run 10000ns
 # Loading sv_std.std
 # Loading work.mp1_tb
 # Loading work.lc3b_types
@@ -223,15 +261,21 @@ restart -f
 # Loading work.mp1
 # Loading work.datapath_sv_unit
 # Loading work.datapath
-# Loading work.mux3
+# Loading work.mux4
 # Loading work.ir_sv_unit
 # Loading work.ir
 # Loading work.regfile_sv_unit
 # Loading work.regfile
+# Loading work.byte_extend_sv_unit
+# Loading work.byte_extend
 # Loading work.register
 # Loading work.mux2
+# Loading work.mux5
+# Loading work.mux3
 # Loading work.sext_sv_unit
 # Loading work.sext
+# Loading work.zextsh_sv_unit
+# Loading work.zextsh
 # Loading work.adj_sv_unit
 # Loading work.adj
 # Loading work.plus2
@@ -245,5 +289,79 @@ restart -f
 # Loading work.alu
 # Loading work.control_sv_unit
 # Loading work.control
-# Loading work.magic_memory
-run 2000ns
+# Loading work.memory
+do wave.do
+restart -f; run 10000ns
+# Loading sv_std.std
+# Loading work.mp1_tb
+# Loading work.lc3b_types
+# Loading work.mp1_sv_unit
+# Loading work.mp1
+# Loading work.datapath_sv_unit
+# Loading work.datapath
+# Loading work.mux4
+# Loading work.ir_sv_unit
+# Loading work.ir
+# Loading work.regfile_sv_unit
+# Loading work.regfile
+# Loading work.byte_extend_sv_unit
+# Loading work.byte_extend
+# Loading work.register
+# Loading work.mux2
+# Loading work.mux5
+# Loading work.mux3
+# Loading work.sext_sv_unit
+# Loading work.sext
+# Loading work.zextsh_sv_unit
+# Loading work.zextsh
+# Loading work.adj_sv_unit
+# Loading work.adj
+# Loading work.plus2
+# Loading work.gencc_sv_unit
+# Loading work.gencc
+# Loading work.cccomp_sv_unit
+# Loading work.cccomp
+# Loading work.br_add_sv_unit
+# Loading work.br_add
+# Loading work.alu_sv_unit
+# Loading work.alu
+# Loading work.control_sv_unit
+# Loading work.control
+# Loading work.memory
+restart -f; run 10000ns
+# Loading sv_std.std
+# Loading work.mp1_tb
+# Loading work.lc3b_types
+# Loading work.mp1_sv_unit
+# Loading work.mp1
+# Loading work.datapath_sv_unit
+# Loading work.datapath
+# Loading work.mux4
+# Loading work.ir_sv_unit
+# Loading work.ir
+# Loading work.regfile_sv_unit
+# Loading work.regfile
+# Loading work.byte_extend_sv_unit
+# Loading work.byte_extend
+# Loading work.register
+# Loading work.mux2
+# Loading work.mux5
+# Loading work.mux3
+# Loading work.sext_sv_unit
+# Loading work.sext
+# Loading work.zextsh_sv_unit
+# Loading work.zextsh
+# Loading work.adj_sv_unit
+# Loading work.adj
+# Loading work.plus2
+# Loading work.gencc_sv_unit
+# Loading work.gencc
+# Loading work.cccomp_sv_unit
+# Loading work.cccomp
+# Loading work.br_add_sv_unit
+# Loading work.br_add
+# Loading work.alu_sv_unit
+# Loading work.alu
+# Loading work.control_sv_unit
+# Loading work.control
+# Loading work.memory

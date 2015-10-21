@@ -1,0 +1,23 @@
+import lc3b_types::*;
+
+module byte_extend #(parameter width = 16)
+(
+    input lc3b_word address, in,
+	 input logic byte_check
+    output lc3b_word out
+);
+
+always_comb
+begin
+	if(byte_check == 0)
+		out = in;
+	else
+		begin
+			if(address[0] == 1)
+				out = {in[15:8], 8'h00};
+			else
+				out = {8'h00, in[7:0]};
+		end
+end
+
+endmodule : byte_extend

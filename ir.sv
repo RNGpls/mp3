@@ -8,9 +8,15 @@ module ir
     output lc3b_opcode opcode,
     output lc3b_reg dest, src1, src2,
 	 output logic imm5_enable,
+	 output logic jsr_enable,
+	 output logic dshf,
+	 output logic ashf,
+	 output lc3b_imm4 imm4,
 	 output lc3b_imm5 imm5,
+	 output lc3b_trapvect8 trapvect8,
     output lc3b_offset6 offset6,
-    output lc3b_offset9 offset9
+    output lc3b_offset9 offset9,
+	 output lc3b_offset11 offset11
 );
 
 lc3b_word data;
@@ -30,11 +36,17 @@ begin
     dest = data[11:9];
     src1 = data[8:6];
     src2 = data[2:0];
-		
+	
 	 imm5_enable = data[5];
+	 jsr_enable = data[11];
+	 dshf 	= data[4];
+	 ashf 	= data[5];
+	 imm4		= data[3:0];
 	 imm5		= data[4:0];
+	 trapvect8 = data[7:0];
     offset6 = data[5:0];
     offset9 = data[8:0];
+	 offset11 = data[10:0];
 end
 
 endmodule : ir
