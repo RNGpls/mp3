@@ -1,12 +1,7 @@
-module br_add #(parameter width = 16)
-(
-	input a,
-	input b,
-	output lc3b_word br_add_out
-)
-
+module adder(input [15:0] pc, input [15:0] brAddr, output logic [15:0] newPC);
 always_comb
 begin
-	br_add_out = a + b;
+	newPC = pc + brAddr;
 end
-endmodule : br_add
+endmodule
+

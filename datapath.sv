@@ -2,315 +2,233 @@ import lc3b_types::*;
 
 module datapath
 (
-    input clk,
+   /* inputs */
+	input clk,
+	input mem_resp,
+	input lc3b_word mem_rdata, 
+	input lc3b_control_word control,
 
-    /* control signals */
-    input logic [1:0] pcmux_sel,
-    input load_pc,
-
-    /* declare more ports here */
-	 input load_ir,
-	 input load_regfile,
-	 input load_mar,
-	 input load_mdr,
-	 input load_cc,
-	 
-	 input storemux_sel,
-	 input logic [2:0] alumux_sel,
-	 input logic [1:0] regfilemux_sel,
-	 input logic [1:0] marmux_sel,
-	 input logic [1:0] mdrmux_sel,
-	 input adjmux_sel,
-	 input destmux_sel,
-	 
-	 input lc3b_word mem_rdata,
-	 input lc3b_aluop aluop,
-	 
-	 input logic byte_check,
-	 
-	 output lc3b_word mem_address,
-	 output lc3b_word mem_wdata,
-	 
-	 output lc3b_opcode opcode,
-	 output logic imm5_enable,
-	 output logic jsr_enable,
-	 output logic [1:0] byte_enable,
-	 output logic dshf,
-	 output logic ashf,
-	 output logic branch_enable
+	/* outputs */
+	output lc3b_mem_wmask mem_byte_enable,
+	output lc3b_word mem_address,
+	output lc3b_word mem_wdata,
+	output lc3b_word instruction
 );
 
-/* declare internal signals */
-
-
-lc3b_reg sr1;
-lc3b_reg sr2;
-lc3b_reg dest;
-lc3b_reg storemux_out;
-lc3b_reg destmux_out;
-
-lc3b_word sr1_out;
-lc3b_word sr2_out;
-
-lc3b_imm4 imm4;
-lc3b_imm5 imm5;
-lc3b_trapvect8  trapvect8;
-lc3b_offset6 offset6;
-lc3b_offset9 offset9;
-lc3b_offset11 offset11;
-
-lc3b_word sext4_out;
-lc3b_word sext5_out;
-lc3b_word sext6_out;
-lc3b_word zextsh8_out;
-lc3b_word adj6_out;
-lc3b_word adj9_out;
-lc3b_word adj11_out;
-
-lc3b_word pcmux_out;
-lc3b_word alumux_out;
-lc3b_word regfilemux_out;
-lc3b_word marmux_out;
-lc3b_word mdrmux_out;
-lc3b_word adjmux_out;
-lc3b_word alu_out;
-lc3b_word pc_out;
-lc3b_word br_add_out;
+/*IF signals*/
+logic pcmux_sel;
 lc3b_word pc_plus2_out;
-lc3b_word byte_extend_out;
+lc3b_word br_add_out;
+lc3b_word pcmux_out;
+lc3b_word pc_out;
+lc3b_word adj9_out;
+lc3b_offset9 id_offset9;
+logic nextLoad;
+logic br_enable;
 
-lc3b_nzp gencc_out;
-lc3b_nzp cc_out;
+assign nextLoad = iResp & ( ~ (dResp ^ ismem) ); //TODO
 
-/*
- * PC
- */
-mux4 pcmux
+assign mem_address = pc_out;
+
+/*ID signals*/
+lc3b_word id_instruction;
+lc3b_opcode id_opcode;
+lc3b_reg id_dest;
+lc3b_reg id_nzp;
+lc3b_reg sr1;
+lc3b_offset9 id_offset9;
+lc3b_reg sr2;
+lc3b_word id_pc;
+//lc3b_word idexInstruction;
+//lc3b_control_word idexControlWord; 
+
+assign instruction = id_instruction;
+assign id_opcode = lc3b_opcode'(id_instruction[15:12]);
+assign id_dest = id_instruction[11:9];
+assign id_nzp = id_instruction[11:9];
+assign id_sr1 = id_instruction[8:6];
+assign id_offset9 = id_instruction[8:0];
+assign id_sr2 = id_instruction[2:0];
+assign br_enable = isbr & cccomp_out;
+
+/*EX signals*/
+
+/*MEM signals*/
+
+/*WB signals*/
+
+/*ALU control*/
+always_comb
+begin 
+	if(mem_opcode == op_str || mem_opcode == op_ldr || mem_opcode == op_ldi || mem_opcode == op_sti || mem_opcode == op_ldb || mem_opcode == op_stb || mem_opcode == op_trap)
+		ismem = 1;
+	else
+		ismem = 0;
+	
+	if(id_opcode == op_br && id_instruction != 16'b0000000000000000)
+		isbr = 1;
+	else
+		isbr = 0;
+	
+	if(mem_opcode == op_ldb || mem_opcode == op_stb)
+	begin
+		if(mem_aluval[0] == 1)
+			newMask = 2'b10;
+		else
+			newMask = 2'b01;
+	end
+	else	
+		newMask = 2'b11;
+	
+
+	if(ex_opcode == op_br && br_enableOut == 1 && id_instruction != 16'b0000000000000000)
+		resetID2 = 1;
+	else
+		resetID2 = 0;
+		
+	if(mem_opcode == op_jmp && ex_instruction != 16'b00000000000000000)
+		resetEX2 = 1;
+	else
+		resetEX2 = 0;
+	
+	if(skipMemory == 1 && nextLoad == 0)
+		temp = 1;
+	else
+		temp = 0;
+
+end
+
+/* Starting Datapath */
+
+mux2 #(.width(1)) pcmux
 (
-    .sel(pcmux_sel),
-    .a(pc_plus2_out),
-    .b(br_add_out),
-	 .c(sr1_out),
-	 .d(mem_wdata),
-    .f(pcmux_out)
+	.sel(pcmux_sel),
+	.a(pc_plus2_out),
+	.b(br_add_out),
+	.f(pcmux_out)
 );
 
-ir ir
-(
-	.clk(clk),
-	.load(load_ir),
-	.in(mem_wdata),
-	.opcode(opcode),
-	.dest(dest),
-	.src1(sr1),
-	.src2(sr2),
-	.imm5_enable(imm5_enable),
-	.jsr_enable(jsr_enable),
-	.dshf(dshf),
-	.ashf(ashf),
-	.imm4(imm4),
-	.imm5(imm5),
-	.trapvect8(trapvect8),
-	.offset6(offset6),
-	.offset9(offset9),
-	.offset11(offset11)
-);
-
-regfile regfile
+register #(.width(16)) pc
 (
 	.clk,
-   .load(load_regfile),
-   .in(regfilemux_out),
-   .src_a(storemux_out),
-	.src_b(sr2),
-	.dest(destmux_out),
-   .reg_a(sr1_out),
-	.reg_b(sr2_out)
+	.load(nextLoad),
+	.in(pcmux_out),
+	.out(pc_out)
 );
 
-byte_extend byte_extend
-(
-	.address(mem_address),
-	.in(mem_wdata),
-	.byte_check(byte_check),
-	.byte_enable(byte_enable),
-	.out(byte_extend_out)
-);
-
-/* Registers */
-
-register pc
-(
-    .clk,
-    .load(load_pc),
-    .in(pcmux_out),	
-    .out(pc_out)
-);
-
-register mar
-(
-	.clk,
-	.load(load_mar),
-	.in(marmux_out),
-	.out(mem_address)
-);
-
-register mdr
-(
-	.clk,
-	.load(load_mdr),
-	.in(mdrmux_out),
-	.out(mem_wdata)
-);
-
-register #(.width(3)) cc
-(
-	.clk,
-	.load(load_cc),
-	.in(gencc_out),
-	.out(cc_out)
-);
-
-/* Mux */
-mux2 #(.width(3)) storemux
-(
-	.sel(storemux_sel),
-	.a(sr1),
-	.b(dest),
-	.f(storemux_out)
-);
-
-mux5 alumux
-(
-	.sel(alumux_sel),
-	.a(sr2_out),
-	.b(adj6_out),
-	.c(sext5_out),
-	.d(sext6_out),
-	.e(sext4_out),
-	.f(alumux_out)
-);
-
-mux4 regfilemux
-(
-	.sel(regfilemux_sel),
-	.a(alu_out),
-	.b(byte_extend_out),
-	.c(br_add_out),
-	.d(pc_out),
-	.f(regfilemux_out)
-);
-
-mux4 marmux
-(
-	.sel(marmux_sel),
-	.a(alu_out),
-	.b(pc_out),
-	.c(mem_wdata),
-	.d(zextsh8_out),
-	.f(marmux_out)
-);
-
-mux3 mdrmux
-(
-	.sel(mdrmux_sel),
-	.a(alu_out),
-	.b(mem_rdata),
-	.c(byte_extend_out),
-	.f(mdrmux_out)
-);
-
-mux2 adjmux
-(
-	.sel(adjmux_sel),
-	.a(adj9_out),
-	.b(adj11_out),
-	.f(adjmux_out)
-);
-
-mux2 #(.width(3)) destmux
-(
-	.sel(destmux_sel),
-	.a(dest),
-	.b(3'b111),
-	.f(destmux_out)
-);
-
-sext #(.width(4)) sext4
-(
-	.in(imm4),
-	.out(sext4_out)
-);
-
-
-sext sext5
-(
-	.in(imm5),
-	.out(sext5_out)
-);
-
-sext #(.width(6)) sext6
-(
-	.in(offset6),
-	.out(sext6_out)
-);
-
-zextsh zextsh8
-(
-	.in(trapvect8),
-	.out(zextsh8_out)
-);
-
-adj #(.width(6)) adj6
-(
-	.in(offset6),
-	.out(adj6_out)
-);
-
-adj #(.width(9)) adj9
-(
-	.in(offset9),
-	.out(adj9_out)
-);
-
-adj #(.width(11)) adj11
-(
-	.in(offset11),
-	.out(adj11_out)
-);
-
-plus2 pc_plus2
+plus2 #(.width(16)) plus2
 (
 	.in(pc_out),
 	.out(pc_plus2_out)
 );
 
+adder br_add
+(
+	.pc(pc_out),
+	.brAddr(adj9_out),
+	.newPC(br_add_out)
+);
+
+
+
+/* Not needed. Instruction memory feeds directly into IF_ID latch.
+ir ir
+(
+);
+*/
+
+/* 
+ * IF/ID
+ */
+IFIDlatch IF_ID
+(
+	.clk
+	.reset(resetID2),
+	.load(nextLoad)
+	.pc_in(pc_out),
+	.instruction_in(mem_rdata),
+	.pc_out(id_pc),
+	.instruction_out(id_instruction)
+);
+
+adj #(.width(9)) adj9
+(
+	.in(id_offset9),
+	.out(adj9_out)
+);
+
+regfile regfile
+(
+	.clk,
+	.load(load_regfile),
+	.in(regfilemux_out),
+	.src_a(storemux_out),
+	.src_b(id_sr2),
+	.dest(id_dest),
+	.reg_a(id_sr1_out),
+	.reg_b(id_sr2_out)
+);
+
+mux2 #(.width(3)) storemux
+(
+	.sel(storemux_sel),
+	.a(id_sr1),
+	.b(id_dest),
+	.f(storemux_out)
+);
+
 gencc gencc
 (
-	.in(regfilemux_out),
-	.out(gencc_out)
+    .in(regfilemux_out),
+    .out(gencc_out)
 );
 
-cccomp cccomp
+registercc cc
 (
-	.in(dest),
-	.cc(cc_out),
-	.branch_enable(branch_enable)
+    .clk,
+    .load(wb_control.load_cc),
+    .in(gencc_out),
+    .out(cc_out)
 );
 
-br_add br_add
+
+/* 
+ * ID/EX
+ */
+IDEXlatch ID_EX
 (
-	.a(adjmux_out),
-	.b(pc_out),
-	.out(br_add_out)
+	.clk,
+	.reset(resetEX2),
+	.load(nextLoad),
+	.pc_in(id_pc),
+	.instruction_in(id_instruction), 
+	.sr1_in(id_sr1_out), 
+	.sr2_in(id_sr2_out), 
+	.control_in(control), 
+	.br_enable(br_enable), 
+
+	.pc_out(ex_pc), 
+	.instruction_out(ex_instruction),
+	.sr1_out(ex_sr1_out),
+	.sr2_out(ex_sr2_out),
+	.control_out(ex_control),
+	.br_enableOut(br_enableOut),
 );
 
-alu alu
+/* 
+ * EX/MEM
+ */
+EXMEMlatch EX_MEM
 (
-	.aluop,
-   .a(sr1_out),
-	.b(alumux_out),
-   .f(alu_out)
+
+);
+
+/* 
+ * MEM/WB
+ */
+MEMWBlatch MEM_WB
+(
+
 );
 
 endmodule : datapath

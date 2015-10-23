@@ -3,12 +3,12 @@ package lc3b_types;
 typedef logic [15:0] lc3b_word;
 typedef logic  [7:0] lc3b_byte;
 
-typedef logic 	[10:0] lc3b_offset11;
-typedef logic  [8:0] lc3b_offset9;
-typedef logic  [5:0] lc3b_offset6;
-typedef logic 	[4:0] lc3b_imm5;
-typedef logic 	[3:0] lc3b_imm4;
-typedef logic	[7:0]	lc3b_trapvect8 ;
+typedef logic [10:0] lc3b_offset11;
+typedef logic [8:0] lc3b_offset9;
+typedef logic [5:0] lc3b_offset6;
+typedef logic [4:0] lc3b_imm5;
+typedef logic [3:0] lc3b_imm4;
+typedef logic [7:0] lc3b_trapvect8 ;
 
 typedef logic  [2:0] lc3b_reg;
 typedef logic  [2:0] lc3b_nzp;
@@ -42,5 +42,36 @@ typedef enum bit [3:0] {
     alu_srl,
     alu_sra
 } lc3b_aluop;
+
+typedef struct packed {
+    // IF
+    // ID
+    logic sr2mux_sel;
+    // EX
+    lc3b_aluop aluop;
+    logic [2:0] alumux_sela;
+    logic [2:0] alumux_selb;
+    // MEM
+    logic mem_read;
+    logic mem_write;
+    logic [2:0] wdatamux_sel;
+    lc3b_mem_wmask mem_byte_enable;
+    logic load_mdr;
+    logic tempRegLoad; // for LDI/STI
+    // WB
+    logic [2:0] regfilemux_sel;
+    logic load_regfile;
+    logic load_cc;
+    
+    //FOR JUMPS
+    logic jumpSignal;
+    logic backUpPC;
+    
+    //FOR TRAP
+    logic isTrap;
+    
+    //FOR MEM SKIP
+    logic forcedNOP;
+} lc3b_control_word;
 
 endpackage : lc3b_types
