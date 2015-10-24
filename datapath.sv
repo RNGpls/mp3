@@ -4,19 +4,21 @@ module datapath
 (
    /* inputs */
 	input clk,
-	input mem_resp,
-	input lc3b_word mem_rdata, 
+	input imem_resp,
+	//input lc3b_word imem_rdata,
+	input dmem_resp,
+	input lc3b_word dmem_rdata,
 	input lc3b_control_word control,
 
 	/* outputs */
-	output lc3b_mem_wmask mem_byte_enable,
-	output lc3b_word mem_address,
-	output lc3b_word mem_wdata,
+	//output lc3b_mem_wmask mem_byte_enable,
+	output lc3b_word imem_address,
+	output lc3b_word dmem_address,
+	output lc3b_word dmem_wdata,
 	output lc3b_word instruction
 );
 
 /*IF signals*/
-logic pcmux_sel;
 lc3b_word pc_plus2_out;
 lc3b_word br_add_out;
 lc3b_word pcmux_out;
@@ -26,38 +28,66 @@ lc3b_offset9 id_offset9;
 logic nextLoad;
 logic br_enable;
 
-assign nextLoad = iResp & ( ~ (dResp ^ ismem) ); //TODO
+assign nextLoad = iResp; //TODO
+assign imem_address = pc_out;
 
-assign mem_address = pc_out;
 
 /*ID signals*/
 lc3b_word id_instruction;
+lc3b_control_word id_control;
 lc3b_opcode id_opcode;
+lc3b_reg id_sr1;
 lc3b_reg id_dest;
+lc3b_reg sr1mux_out;
 lc3b_reg id_nzp;
-lc3b_reg sr1;
+lc3b_reg id_sr1_out;
 lc3b_offset9 id_offset9;
-lc3b_reg sr2;
+lc3b_reg id_sr2_out;
 lc3b_word id_pc;
+logic cccomp_out;
+
 //lc3b_word idexInstruction;
 //lc3b_control_word idexControlWord; 
 
 assign instruction = id_instruction;
 assign id_opcode = lc3b_opcode'(id_instruction[15:12]);
+assign id_sr1 = id_instruction[8:6];
 assign id_dest = id_instruction[11:9];
 assign id_nzp = id_instruction[11:9];
-assign id_sr1 = id_instruction[8:6];
 assign id_offset9 = id_instruction[8:0];
 assign id_sr2 = id_instruction[2:0];
-assign br_enable = isbr & cccomp_out;
+assign br_enable = cccomp_out & isbr;
 
 /*EX signals*/
+lc3b_word ex_instruction;
+lc3b_control_word ex_control;
+lc3b_word alumuxa_out;
+lc3b_word alumuxb_out;
+lc3b_offset6 ex_offset6;
+lc3b_word adj6_out;
+logic br_enableOut;
+lc3b_word regfilemux_out;
+lc3b_word ex_rdata;
+
+assign ex_offset6 = ex_instruction[5:0];
 
 /*MEM signals*/
+lc3b_word mem_insutruction;
+lc3b_reg mem_sr1_out;
+lc3b_word mem_alu_out;
+lc3b_control_word mem_control;
+lc3b_word mem_regfile;
+
+assign dmem_address = mem_alu_out;
+assign dmem_wdata = mem_sr1_out;
+assign instruction = mem_instruction;
 
 /*WB signals*/
+lc3b_word wb_alu_out;
+lc3b_word wb_regfile;
+lc3b_word wb_rdata;
 
-/*ALU control*/
+/*mini control*/
 always_comb
 begin 
 	if(mem_opcode == op_str || mem_opcode == op_ldr || mem_opcode == op_ldi || mem_opcode == op_sti || mem_opcode == op_ldb || mem_opcode == op_stb || mem_opcode == op_trap)
@@ -72,7 +102,7 @@ begin
 	
 	if(mem_opcode == op_ldb || mem_opcode == op_stb)
 	begin
-		if(mem_aluval[0] == 1)
+		if(mem_alu_out[0] == 1)
 			newMask = 2'b10;
 		else
 			newMask = 2'b01;
@@ -102,7 +132,7 @@ end
 
 mux2 #(.width(1)) pcmux
 (
-	.sel(pcmux_sel),
+	.sel(br_enableOut),
 	.a(pc_plus2_out),
 	.b(br_add_out),
 	.f(pcmux_out)
@@ -146,10 +176,21 @@ IFIDlatch IF_ID
 	.reset(resetID2),
 	.load(nextLoad)
 	.pc_in(pc_out),
-	.instruction_in(mem_rdata),
+	.instruction_in(imem_rdata),
+	.control_in(control),
 	.pc_out(id_pc),
-	.instruction_out(id_instruction)
+	.instruction_out(id_instruction),
+	.control_out(id_control)
 );
+
+mux2 #(.width(3)) sr1mux
+(
+	.sel(id_control.sr1mux_sel),
+	.a(id_sr1),
+	.b(id_dest),
+	.f(sr1mux_out)
+);
+
 
 adj #(.width(9)) adj9
 (
@@ -161,20 +202,12 @@ regfile regfile
 (
 	.clk,
 	.load(load_regfile),
-	.in(regfilemux_out),
-	.src_a(storemux_out),
+	.in(wb_regfile),
+	.src_a(sr1mux_out),
 	.src_b(id_sr2),
 	.dest(id_dest),
 	.reg_a(id_sr1_out),
 	.reg_b(id_sr2_out)
-);
-
-mux2 #(.width(3)) storemux
-(
-	.sel(storemux_sel),
-	.a(id_sr1),
-	.b(id_dest),
-	.f(storemux_out)
 );
 
 gencc gencc
@@ -191,6 +224,12 @@ registercc cc
     .out(cc_out)
 );
 
+cccomp cccomp
+(
+	.in(cc_out),
+	.cc(id_nzp),
+	.branch_enable(cccomp_out)
+);
 
 /* 
  * ID/EX
@@ -204,15 +243,54 @@ IDEXlatch ID_EX
 	.instruction_in(id_instruction), 
 	.sr1_in(id_sr1_out), 
 	.sr2_in(id_sr2_out), 
-	.control_in(control), 
+	.rdata_in(wb_rdata),
+	.control_in(id_control), 
 	.br_enable(br_enable), 
-
 	.pc_out(ex_pc), 
 	.instruction_out(ex_instruction),
 	.sr1_out(ex_sr1_out),
 	.sr2_out(ex_sr2_out),
+	.rdata_out(ex_rdata),
 	.control_out(ex_control),
-	.br_enableOut(br_enableOut),
+	.br_enableOut(br_enableOut)
+);
+
+adj #(.width(6)) adj6
+(
+	.in(ex_offset6),
+	.out(adj6_out)
+);
+
+mux2 alumux_srca
+(
+	.sel(ex_control.alumux_sela),
+	.a(ex_sr1_out),
+	.b(ex_pc),
+	.f(alumuxa_out)
+);
+
+mux2 alumux_srcb
+(
+	.sel(ex_control.alumux_selb),
+	.a(ex_sr2_out),
+	.b(adj6_out),
+	.f(alumuxb_out)
+);
+
+alu alu
+(
+	.aluop(ex_control.aluop),
+	.a(alumuxa_out),
+	.b(alumuxb_out),
+	.f(alu_out)
+);
+
+mux2 #(.width((3)),) regfilemux
+(
+	.sel(ex_control.regfilemux_sel),
+	.a(alu_out),
+	.b(ex_rdata),
+	.f(regfilemux_out)
 );
 
 /* 
@@ -220,15 +298,36 @@ IDEXlatch ID_EX
  */
 EXMEMlatch EX_MEM
 (
-
+	.clk,
+	.reset,
+	.load,
+	.instruction_in(ex_instruction),
+    .sr1_in(ex_sr1_out),
+    .aluval_in(alu_out),
+    .regfile_in(regfilemux_out),
+	.control_in(ex_control),
+    .instruction_out(mem_insutruction),
+    .sr1_out(mem_sr1_out),
+    .aluval_out(mem_alu_out),
+    .regfile_out(mem_regfile),
+    .control_out(mem_control)
 );
+
 
 /* 
  * MEM/WB
  */
 MEMWBlatch MEM_WB
 (
-
+	.clk,
+	.reset,
+	.load,
+	.rdata_in(dmem_rdata),
+	.aluval_in(mem_alu_out),
+	.regfile_in(mem_regfile),
+	.rdata_out(wb_rdata)
+	.aluval_out(wb_alu_out),
+	.regfile_out(wb_regfile)
 );
 
 endmodule : datapath

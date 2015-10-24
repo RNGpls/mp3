@@ -4,35 +4,48 @@ module mp3
 (
     input clk,
 
-    /* Memory signals */
-    input mem_resp,
-    input lc3b_word mem_rdata,
-    output mem_read,
-    output mem_write,
-    output lc3b_mem_wmask mem_byte_enable,
-    output lc3b_word mem_address,
-    output lc3b_word mem_wdata
+     /* Port A */
+    input logic resp_a,
+    input logic [15:0] rdata_a,
+    output logic [15:0] address_a,
+
+    /* Port B */
+    input logic resp_b,
+    input logic [15:0] rdata_b,
+    output logic read_b,
+    output logic write_b,
+    output logic [1:0] wmask_b,
+    output logic [15:0] address_b,
+    output logic [15:0] wdata_b
 );
 
 lc3b_word instruction;
+lc3b_control_word control;
+
+assign read_b = control.mem_read;
+assign write_b = control.mem_write;
 
 datapath datapath
 (
 	/* inputs */
 	.clk,
-	.mem_resp,
-	.mem_rdata,
+	.imem_resp(resp_a),
+	//.imem_rdata,
+	.dmem_resp(resp_b),
+	.dmem_rdata(rdata_b),
+	.control,
 
 	/* outputs */
-	.mem_byte_enable,
-	.mem_address,
-	.mem_wdata,
+	//.mem_byte_enable,
+	.imem_address(address_a),
+	.dmem_address(address_b),
+	.dmem_wdata(wdata_b),
 	.instruction
 );
 
-control control
+control_rom control
 (
-	.clk,
+	.control,
 	.instruction
 );
 
