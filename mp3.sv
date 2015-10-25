@@ -14,7 +14,6 @@ module mp3
     input logic [15:0] rdata_b,
     output logic read_b,
     output logic write_b,
-    output logic [1:0] wmask_b,
     output logic [15:0] address_b,
     output logic [15:0] wdata_b
 );
@@ -22,15 +21,12 @@ module mp3
 lc3b_word instruction;
 lc3b_control_word control;
 
-assign read_b = control.mem_read;
-assign write_b = control.mem_write;
-
 datapath datapath
 (
 	/* inputs */
 	.clk,
 	.imem_resp(resp_a),
-	//.imem_rdata,
+	.imem_rdata(rdata_a),
 	.dmem_resp(resp_b),
 	.dmem_rdata(rdata_b),
 	.control,
@@ -40,13 +36,15 @@ datapath datapath
 	.imem_address(address_a),
 	.dmem_address(address_b),
 	.dmem_wdata(wdata_b),
-	.instruction
+	.instruction,
+	.dmem_read(read_b),
+	.dmem_write(write_b)
 );
 
-control_rom control
+control_rom control_rom
 (
 	.control,
 	.instruction
 );
 
-endmodule : mp1
+endmodule : mp3

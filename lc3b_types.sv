@@ -46,7 +46,7 @@ typedef enum bit [3:0] {
 typedef struct packed {
     // IF
     // ID
-    logic sr1mux_sel;
+    logic sr2mux_sel;
     // EX
     lc3b_aluop aluop;
     logic [2:0] alumux_sela;

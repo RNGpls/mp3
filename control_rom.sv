@@ -23,7 +23,7 @@ always_comb
 begin
 	// IF
 	// ID
-	control.sr1mux_sel = 0;
+	control.sr2mux_sel = 0;
 	// EX
 	control.aluop = alu_pass;
 	control.alumux_sela = 0;
@@ -54,7 +54,6 @@ begin
 		op_add: begin
 			control.alumux_sela = 3'b000;
 			control.aluop = alu_add;
-			control.sr1mux_sel = 0;
 			control.load_regfile = 1;
 			control.regfilemux_sel = 3'b000;
 			control.load_cc = 1;
@@ -70,7 +69,6 @@ begin
 		op_and: begin
 			control.alumux_sela = 3'b000;
 			control.aluop = alu_and;
-			control.sr1mux_sel = 0;
 			control.load_regfile = 1;
 			control.regfilemux_sel = 3'b000;
 			control.load_cc = 1;
@@ -86,7 +84,6 @@ begin
 		op_not: begin
 			control.alumux_sela = 3'b000;
 			control.aluop = alu_not;
-			control.sr1mux_sel = 0;
 			control.regfilemux_sel = 3'b000;
 			control.load_regfile = 1;
 			control.load_cc = 1;
@@ -120,7 +117,7 @@ begin
 			control.alumux_sela = 3'b000;
 			control.alumux_selb = 3'b001; 
 			control.aluop = alu_add;
-			control.sr1mux_sel = 1; 
+			control.sr2mux_sel = 1; 
 			control.mem_write = 1;
 			control.wdatamux_sel = 3'b001;
 		end

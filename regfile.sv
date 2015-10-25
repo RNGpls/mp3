@@ -5,8 +5,8 @@ module regfile
     input clk,
     input load,
     input lc3b_word in,
-    input lc3b_reg src_a, src_b, dest, memSR2,
-    output lc3b_word reg_a, reg_b, dest_out, memSR2_out
+    input lc3b_reg src_a, src_b, dest,
+    output lc3b_word reg_a, reg_b
 );
 
 lc3b_word data [7:0] /* synthesis ramstyle = "logic" */;
@@ -32,10 +32,8 @@ end
 
 always_comb
 begin
-    reg_a 	 = data[src_a];
-    reg_b 	 = data[src_b];
-	 dest_out = data[dest];
-	 memSR2_out = data[memSR2];
+    reg_a = data[src_a];
+    reg_b = data[src_b];
 end
 
 endmodule : regfile

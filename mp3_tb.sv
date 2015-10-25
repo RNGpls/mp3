@@ -18,7 +18,6 @@ logic [15:0] wdata_b;
 logic resp_b;
 logic [15:0] rdata_b;
 
-
 /* Clock generator */
 initial clk = 0;
 always #5 clk = ~clk;
@@ -31,19 +30,22 @@ mp3 dut
     .rdata_a,
     .read_b,
     .write_b,
-    .wmask_b,
     .address_b,
     .wdata_b,
     .resp_b,
     .rdata_b
 );
 
-magic_mem_dp memory
+magic_memory_dp memory
 (
     .clk,
     .read_a(1'b1),
     .write_a(1'b0),
     .address_a,
+    .wmask_a(2'b00),
+    .wdata_a(16'h0000),
+    .resp_a,
+    .rdata_a,
     .read_b,
     .write_b,
     .wmask_b(2'b11),

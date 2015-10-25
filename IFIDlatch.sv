@@ -1,4 +1,4 @@
-import lc3b_types: *;
+import lc3b_types::*;
 
 module IFID_latch
 (
@@ -13,17 +13,33 @@ module IFID_latch
 	output lc3b_control_word control_out
 );
 
+lc3b_word pc_data;
+lc3b_word instruction_data;
+lc3b_control_word control_data;
+
+initial begin
+	pc_data = 16'h0000;
+	instruction_data = 16'h0000;
+	control_data = 1'b0;
+end
+
 always_ff @ (posedge clk or posedge reset) begin
 	if (reset == 1) begin
-		pc_out <= 16'h0000;
-		instruction_out <= 16'h0000;
-		control_out <= 1'b0;
+		pc_data <= 16'h0000;
+		instruction_data <= 16'h0000;
+		control_data <= 1'b0;
 	end
 	else if (load == 1) begin
-		pc_out <= pc_in;
-		instruction_out <= instruction_in;
-		control_out <= control_in;
+		pc_data <= pc_in;
+		instruction_data <= instruction_in;
+		control_data <= control_in;
 	end
 end
 
-endmodule
+always_comb begin
+	pc_out = pc_data;
+	instruction_out = instruction_data;
+	control_out = control_data;
+end
+
+endmodule : IFID_latch
